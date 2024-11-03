@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+authors = [
+  {email = "thomas@gibfest.dk"},
+  {name = "Thomas Steen Rasmussen"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "typer-slim==0.12.5",
+    "bma-client",
+]
+description = "BornHack Media Archive CLI Tool"
+name = "bma-cli"
+version = "0.1"
+readme = "README.md"
+requires-python = ">=3.10"
+
+[project.scripts]
+"bma" = "bma_cli:app"
+
+[project.optional-dependencies]
+dev = [
+    "pre-commit==4.0.0",
+]
+
+[project.urls]
+homepage = "https://github.com/bornhack/bma-cli-python"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+target-version = "py311"
+extend-exclude = [
+    ".git",
+    "__pycache__",
+]
+lint.select = ["ALL"]
+lint.ignore = [
+    "G004", # https://docs.astral.sh/ruff/rules/logging-f-string/
+    "ANN101", # https://docs.astral.sh/ruff/rules/missing-type-self/
+    "ANN102", # https://docs.astral.sh/ruff/rules/missing-type-cls/
+    "EM101", # https://docs.astral.sh/ruff/rules/raw-string-in-exception/
+    "EM102", # https://docs.astral.sh/ruff/rules/f-string-in-exception/
+    "COM812", # missing-trailing-comma (https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules)
+    "ISC001", # single-line-implicit-string-concatenation (https://docs.astral.sh/ruff/formatter/#conflicting-lint-rules)
+    "ARG001", # https://docs.astral.sh/ruff/rules/unused-function-argument/
+    "ARG002", # https://docs.astral.sh/ruff/rules/unused-method-argument/
+    "ARG004", # https://docs.astral.sh/ruff/rules/unused-static-method-argument/
+]
+line-length = 120
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
