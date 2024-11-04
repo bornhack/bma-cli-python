@@ -47,8 +47,9 @@ class ImageConversionJob(BaseJob):
 
     filetype: str
     width: int
-    aspect_ratio_numerator: int | None = None
-    aspect_ratio_denominator: int | None = None
+    height: int
+    mimetype: str
+    custom_aspect_ratio: bool
 
 
 class ImageExifExtractionJob(BaseJob):
