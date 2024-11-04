@@ -103,7 +103,7 @@ def upload(files: list[str]) -> None:
     for f in files:
         pf = Path(f)
         click.echo(f"Uploading file {f}...")
-        result = client.upload_file(path=pf, license=config["license"], attribution=config["attribution"])
+        result = client.upload_file(path=pf, file_license=config["license"], attribution=config["attribution"])
         metadata = result["bma_response"]
         click.echo(f"File {metadata['uuid']} uploaded OK!")
         # check for jobs
@@ -117,12 +117,12 @@ def upload(files: list[str]) -> None:
             continue
 
         # the grind
-        click.echo(f"Handling {len(jobs)} jobs for file {f} ...")
+        click.echo(f"Handling {len(jobs)} jobs for file {pf} ...")
         for j in jobs:
             # load job in a typeddict, but why?
             klass = getattr(sys.modules[__name__], j["job_type"])
             job = klass(**j)
-            handle_job(f=f, job=job, client=client, config=config)
+            handle_job(f=pf, job=job, client=client, config=config)
         click.echo("Done!")
 
 
