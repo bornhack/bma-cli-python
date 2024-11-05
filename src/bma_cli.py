@@ -65,6 +65,16 @@ def fileinfo(file_uuid: uuid.UUID) -> None:
 
 
 @app.command()
+def jobs() -> None:
+    """Get info on assigned jobs."""
+    client, config = init()
+    jobs = client.get_jobs(job_filter=f"?limit=0&finished=false&client_uuid={client.uuid}")
+    click.echo(json.dumps(jobs))
+    click.echo(f"Total {len(jobs)} unfinished jobs assigned to this client.")
+
+
+
+@app.command()
 def download(file_uuid: uuid.UUID) -> None:
     """Download a file."""
     client, config = init()
