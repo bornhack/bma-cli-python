@@ -145,12 +145,12 @@ def upload(files: list[str]) -> None:
             klass = getattr(sys.modules[__name__], j["job_type"])
             job = klass(**j)
             handle_job(f=pf, job=job, client=client, config=config)
-        click.echo(f"Finished uploading {len(file_uuids)} files, creating album...")
-        now = datetime.isoformat(datetime.now(tz=UTC))
-        album = client.create_album(file_uuids=file_uuids, title=f"Created-{now}", description=f"Created-{now}")
-        url = f"{client.base_url}/albums/{album['uuid']}/"
-        click.echo(f"Created album {album['uuid']} with the uploaded file(s) see it at {url}")
-        click.echo("Done!")
+    click.echo(f"Finished uploading {len(file_uuids)} files, creating album...")
+    now = datetime.isoformat(datetime.now(tz=UTC))
+    album = client.create_album(file_uuids=file_uuids, title=f"Created-{now}", description=f"Created-{now}")
+    url = f"{client.base_url}/albums/{album['uuid']}/"
+    click.echo(f"Created album {album['uuid']} with the uploaded file(s) see it at {url}")
+    click.echo("Done!")
 
 
 @app.command()
