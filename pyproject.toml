@@ -15,18 +15,19 @@ dependencies = [
     "typer-slim==0.12.5",
     "bma-client-lib",
 ]
-description = "BornHack Media Archive CLI Tool"
 name = "bma-cli"
+description = "BornHack Media Archive CLI Tool"
 readme = "README.md"
 requires-python = ">=3.11"
 dynamic = ["version"]
 
 [project.scripts]
-"bma" = "bma_cli:app"
+"bma" = "bma_cli.bma_cli:app"
 
 [project.optional-dependencies]
 dev = [
     "pre-commit==4.0.0",
+    "setuptools-scm == 8.0.4",
 ]
 
 [project.urls]

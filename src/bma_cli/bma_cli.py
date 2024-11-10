@@ -60,7 +60,7 @@ class ImageExifExtractionJob(BaseJob):
 def version() -> None:
     """Return the version of bma-cli and bma-client."""
     click.echo(f"bma-cli version {get_version('bma-cli')}")
-    click.echo(f"bma-client version {get_version('bma-client')}")
+    click.echo(f"bma-client-lib version {get_version('bma-client-lib')}")
 
 
 @app.command()
