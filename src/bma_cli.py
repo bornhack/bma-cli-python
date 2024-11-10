@@ -11,7 +11,7 @@ from typing import TypedDict
 
 import click
 import typer
-from bma_client import BmaClient
+from bma_client_lib import BmaClient
 
 APP_NAME = "bma-cli"
 app = typer.Typer()
