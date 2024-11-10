@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -13,13 +13,13 @@ classifiers = [
 ]
 dependencies = [
     "typer-slim==0.12.5",
-    "bma-client",
+    "bornhack-media-archive-client",
 ]
 description = "BornHack Media Archive CLI Tool"
 name = "bma-cli"
-version = "0.1"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
+dynamic = ["version"]
 
 [project.scripts]
 "bma" = "bma_cli:app"
@@ -34,6 +34,8 @@ homepage = "https://github.com/bornhack/bma-cli-python"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
+
+[tool.setuptools_scm]
 
 [tool.setuptools.packages.find]
 where = ["src"]
