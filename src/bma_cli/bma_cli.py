@@ -5,6 +5,7 @@ import logging
 import sys
 import time
 import uuid
+from datetime import UTC, datetime
 from importlib.metadata import version as get_version
 from pathlib import Path
 from typing import TypedDict
@@ -34,7 +35,7 @@ class BaseJob(TypedDict):
     """Base class inherited by ImageConversionJob and ImageExifExtractionJob."""
 
     job_type: str
-    uuid: uuid.UUID
+    job_uuid: uuid.UUID
     basefile_uuid: uuid.UUID
     user_uuid: uuid.UUID
     client_uuid: uuid.UUID
@@ -119,12 +120,14 @@ def grind() -> None:
 def upload(files: list[str]) -> None:
     """Loop over files and upload each."""
     client, config = init()
+    file_uuids = []
     for f in files:
         pf = Path(f)
         click.echo(f"Uploading file {f}...")
         result = client.upload_file(path=pf, file_license=config["license"], attribution=config["attribution"])
         metadata = result["bma_response"]
         click.echo(f"File {metadata['uuid']} uploaded OK!")
+        file_uuids.append(metadata["uuid"])
         # check for jobs
         if metadata["jobs_unfinished"] == 0:
             continue
@@ -142,6 +145,11 @@ def upload(files: list[str]) -> None:
             klass = getattr(sys.modules[__name__], j["job_type"])
             job = klass(**j)
             handle_job(f=pf, job=job, client=client, config=config)
+        click.echo(f"Finished uploading {len(file_uuids)} files, creating album...")
+        now = datetime.isoformat(datetime.now(tz=UTC))
+        album = client.create_album(file_uuids=file_uuids, title=f"Created-{now}", description=f"Created-{now}")
+        url = f"{client.base_url}/albums/{album['uuid']}/"
+        click.echo(f"Created album {album['uuid']} with the uploaded file(s) see it at {url}")
         click.echo("Done!")
 
 
