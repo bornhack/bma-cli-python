@@ -9,7 +9,7 @@ jobs:
     name: "IRC Notifications"
     steps:
     - name: "IRC notification"
-      if: ${{ (github.repository == 'bornhack/bma') && (github.actor != 'dependabot[bot]') }}
+      if: ${{ (github.repository == 'bornhack/bma-cli-python') && (github.actor != 'dependabot[bot]') }}
       uses: "Gottox/irc-message-action@v2"
       with:
         server: "irc.baconsvin.org"
