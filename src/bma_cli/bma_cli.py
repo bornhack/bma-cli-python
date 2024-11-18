@@ -10,7 +10,7 @@ from pathlib import Path
 import click
 import typer
 from bma_client_lib import BmaClient
-from bma_client_lib.datastructures import job_types
+from bma_client_lib.datastructures import JobNotSupportedError, job_types
 
 APP_NAME = "bma-cli"
 app = typer.Typer()
@@ -66,12 +66,20 @@ def download(file_uuid: uuid.UUID) -> None:
 def grind() -> None:
     """Get jobs from the server and handle them."""
     client, config = init()
+    # keep track of failing jobs to prevent getting them assigned again
+    failed_jobs: set[str] = set()
+    # run in a loop to make sure jobs created as a result of other jobs being completed are all processed
     while True:
         # first get any unfinished jobs already assigned to this client
-        jobs = client.get_jobs(job_filter=f"?limit=0&finished=false&client_uuid={client.uuid}")
+        job_filter = f"?limit=0&finished=false&client_uuid={client.uuid}"
+        if failed_jobs:
+            job_filter += f"&skip_jobs={','.join(failed_jobs)}"
+        jobs = client.get_jobs(job_filter=job_filter)
         if not jobs:
-            # no unfinished jobs assigned to this client, ask for new assignment
-            jobs = client.get_job_assignment()
+            # no unfinished jobs assigned to this client, ask for new assignment,
+            # but skip jobs which previously failed
+            job_filter = f"?skip_jobs={','.join(failed_jobs)}" if failed_jobs else ""
+            jobs = client.get_job_assignment(job_filter=job_filter)
 
         if not jobs:
             click.echo("Nothing left to do.")
@@ -82,7 +90,13 @@ def grind() -> None:
         for dictjob in jobs:
             job = job_types[dictjob["job_type"]](**dictjob)
             click.echo(f"Handling {job.job_type} {job.job_uuid} ...")
-            client.handle_job(job=job)
+            try:
+                client.handle_job(job=job)
+            except JobNotSupportedError:
+                logger.exception(f"Job {job.job_uuid} not supported")
+                failed_jobs.add(str(job.job_uuid))
+                client.unassign_job(job=job)
+                continue
     click.echo("Done grinding for now!")
 
 
