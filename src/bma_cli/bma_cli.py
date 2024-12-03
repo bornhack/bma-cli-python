@@ -45,10 +45,10 @@ def fileinfo(file_uuid: uuid.UUID) -> None:
 
 
 @app.command()
-def jobs(filter: str = "?limit=0&finished=false") -> None:  # noqa: A002
+def jobs(jobfilter: str = "?limit=0&finished=false") -> None:
     """Get info on unfinished jobs."""
     client, config = init()
-    jobs = client.get_jobs(job_filter=filter)
+    jobs = client.get_jobs(job_filter=jobfilter)
     click.echo(json.dumps(jobs))
     click.echo(f"Total {len(jobs)} jobs returned by filter {filter}.", err=True)
 
@@ -107,6 +107,8 @@ def upload(files: list[str]) -> None:
     file_uuids = []
     for f in files:
         pf = Path(f)
+        if pf.is_dir():
+            continue
         click.echo(f"Uploading file {f}...")
         result = client.upload_file(path=pf, file_license=config["license"], attribution=config["attribution"])
         metadata = result["bma_response"]
@@ -124,7 +126,7 @@ def upload(files: list[str]) -> None:
 
 @app.command()
 def exif(path: Path) -> None:
-    """Get and return exif for a file."""
+    """Get and return exif for a local file."""
     client, config = init()
     click.echo(json.dumps(client.get_exif(fname=path)))
 
