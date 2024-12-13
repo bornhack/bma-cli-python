@@ -13,7 +13,7 @@ classifiers = [
 ]
 dependencies = [
     "typer-slim==0.12.5",
-    "bma-client-lib>=0.9.0",
+    "bma-client-lib>=0.9.1",
 ]
 name = "bma-cli"
 description = "BornHack Media Archive CLI Tool"
