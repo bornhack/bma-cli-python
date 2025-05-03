@@ -1,4 +1,5 @@
 """The BMA CLI wrapper."""
+import time
 
 import json
 import logging
@@ -109,10 +110,14 @@ def upload(files: list[str]) -> None:
         pf = Path(f)
         if pf.is_dir():
             continue
+        size = pf.stat().st_size
         click.echo(f"Uploading file {f}...")
+        start = time.time()
         result = client.upload_file(path=pf, file_license=config["license"], attribution=config["attribution"])
         metadata = result["bma_response"]
-        click.echo(f"File {metadata['uuid']} uploaded OK!")
+        t = round(time.time() - start, 2)
+        click.echo(f"File {metadata['uuid']} uploaded OK! It took {t} seconds to upload {size} bytes, speed {round(size/t)} bytes/sec")
+        logger.debug(f"Done, ")
         file_uuids.append(metadata["uuid"])
     click.echo(f"Finished uploading {len(file_uuids)} files, creating album...")
     now = datetime.isoformat(datetime.now(tz=UTC))
