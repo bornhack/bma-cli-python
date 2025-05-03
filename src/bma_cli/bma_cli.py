@@ -1,8 +1,8 @@
 """The BMA CLI wrapper."""
-import time
 
 import json
 import logging
+import time
 import uuid
 from datetime import UTC, datetime
 from importlib.metadata import version as get_version
@@ -116,8 +116,11 @@ def upload(files: list[str]) -> None:
         result = client.upload_file(path=pf, file_license=config["license"], attribution=config["attribution"])
         metadata = result["bma_response"]
         t = round(time.time() - start, 2)
-        click.echo(f"File {metadata['uuid']} uploaded OK! It took {t} seconds to upload {size} bytes, speed {round(size/t)} bytes/sec")
-        logger.debug(f"Done, ")
+        click.echo(
+            f"File {metadata['uuid']} uploaded OK!"
+            f"It took {t} seconds to upload {size} bytes, speed {round(size/t)} bytes/sec."
+        )
+        logger.debug("Done, ")
         file_uuids.append(metadata["uuid"])
     click.echo(f"Finished uploading {len(file_uuids)} files, creating album...")
     now = datetime.isoformat(datetime.now(tz=UTC))
