@@ -117,7 +117,7 @@ def upload(files: list[str]) -> None:
         metadata = result["bma_response"]
         t = round(time.time() - start, 2)
         click.echo(
-            f"File {metadata['uuid']} uploaded OK!"
+            f"File {metadata['uuid']} uploaded OK! "
             f"It took {t} seconds to upload {size} bytes, speed {round(size/t)} bytes/sec."
         )
         logger.debug("Done, ")
